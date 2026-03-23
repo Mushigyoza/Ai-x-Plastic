@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI × 塑化產業 產銷管理應用指南</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --navy:   #0C1E35;
+  --blue:   #1A4A7A;
+  --mid:    #2E6DA4;
+  --sky:    #4A9FD4;
+  --light:  #D6E8F7;
+  --accent: #E07B2A;
+  --green:  #1A9B6C;
+  --red:    #C84040;
+  --purple: #7B3FA0;
+  --white:  #FFFFFF;
+  --off:    #F0F4F8;
+  --card:   #FFFFFF;
+  --border: #C8D8E8;
+  --text:   #1C2B3A;
+  --muted:  #5A7085;
+  --mono:   'DM Mono', monospace;
+  --sans:   'Noto Sans TC', '微軟正黑體', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--off);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--navy); }
+::-webkit-scrollbar-thumb { background: var(--mid); border-radius: 3px; }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(12,30,53,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 58px;
+}
+.nav-logo {
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-logo .dot {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.5; transform:scale(1.3); }
+}
+.nav-links {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.nav-links a:hover { color: white; background: rgba(255,255,255,0.08); }
+.nav-links a.active { color: white; background: rgba(46,109,164,0.4); }
+
+/* ── HERO ── */
+.hero {
+  background: var(--navy);
+  padding: 120px 60px 80px;
+  position: relative;
+  overflow: hidden;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 80% 50%, rgba(46,109,164,0.2) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 15% 80%, rgba(224,123,42,0.12) 0%, transparent 60%);
+}
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.hero-content { position: relative; z-index: 1; max-width: 700px; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(224,123,42,0.15);
+  border: 1px solid rgba(224,123,42,0.3);
+  color: #F0A060;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+.hero h1 {
+  font-size: 52px;
+  font-weight: 900;
+  color: white;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.hero h1 em {
+  font-style: normal;
+  color: #64B5F6;
+}
+.hero-sub {
+  font-size: 16px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.7;
+  margin-bottom: 32px;
+  font-weight: 300;
+}
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.hero-pill {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.7);
+  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.hero-pill:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.25);
+  color: white;
+}
+.hero-stats {
+  position: absolute;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 1;
+}
+.stat-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 16px 22px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: translateX(30px);
+  animation: slideIn 0.5s forwards;
+}
+.stat-card:nth-child(1) { animation-delay: 0.3s; }
+.stat-card:nth-child(2) { animation-delay: 0.5s; }
+.stat-card:nth-child(3) { animation-delay: 0.7s; }
+@keyframes slideIn {
+  to { opacity: 1; transform: translateX(0); }
+}
+.stat-num {
+  font-size: 28px;
+  font-weight: 900;
+  color: white;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-num span { color: var(--accent); }
+.stat-label { font-size: 11px; color: rgba(255,255,255,0.5); }
+
+/* ── SECTION ── */
+section {
+  padding: 64px 60px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+section.visible { opacity: 1; transform: translateY(0); }
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--mid);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.section-label::before {
+  content: '';
+  width: 24px; height: 2px;
+  background: var(--accent);
+}
+.section-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--navy);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.section-desc {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 36px;
+  line-height: 1.7;
+  max-width: 640px;
+}
+
+/* ── SUPPLY CHAIN SECTION ── */
+#supply { background: var(--navy); }
+#supply .section-label { color: #90B8D8; }
+#supply .section-title { color: white; }
+#supply .section-desc { color: rgba(255,255,255,0.45); }
+
+.chain-container {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  margin-bottom: 24px;
+}
+.chain-node {
+  flex: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  border: 2px solid transparent;
+}
+.chain-node:hover, .chain-node.active {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+}
+.chain-node-header {
+  padding: 14px 14px 10px;
+  position: relative;
+}
+.chain-tier-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+.chain-node-name {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+.chain-node-items {
+  font-size: 11px;
+  line-height: 1.8;
+  opacity: 0.8;
+}
+.chain-node-footer {
+  padding: 8px 14px;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.chain-arrow {
+  display: flex;
+  align-items: center;
+  color: rgba(255,255,255,0.2);
+  font-size: 20px;
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+
+/* chain node color themes */
+.cn-raw { background: #2D1020; border-color: rgba(200,64,64,0.3); }
+.cn-raw .chain-node-name,.cn-raw .chain-node-items { color: #FFB3B3; }
+.cn-raw .chain-tier-badge { background: rgba(200,64,64,0.3); color: #FF8080; }
+.cn-raw .chain-node-footer { background: rgba(200,64,64,0.15); color: #FF8080; }
+.cn-raw:hover,.cn-raw.active { border-color: var(--red); box-shadow: 0 12px 32px rgba(200,64,64,0.25); }
+
+.cn-t3 { background: #2A1A08; border-color: rgba(224,123,42,0.3); }
+.cn-t3 .chain-node-name,.cn-t3 .chain-node-items { color: #FFD0A0; }
+.cn-t3 .chain-tier-badge { background: rgba(224,123,42,0.3); color: #FFA040; }
+.cn-t3 .chain-node-footer { background: rgba(224,123,42,0.15); color: #FFA040; }
+.cn-t3:hover,.cn-t3.active { border-color: var(--accent); box-shadow: 0 12px 32px rgba(224,123,42,0.25); }
+
+.cn-t2 { background: #0D2035; border-color: rgba(46,109,164,0.4); }
+.cn-t2 .chain-node-name,.cn-t2 .chain-node-items { color: #A8D0F0; }
+.cn-t2 .chain-tier-badge { background: rgba(46,109,164,0.3); color: #70B0E0; }
+.cn-t2 .chain-node-footer { background: rgba(46,109,164,0.2); color: #70B0E0; }
+.cn-t2:hover,.cn-t2.active { border-color: var(--sky); box-shadow: 0 12px 32px rgba(74,159,212,0.25); }
+
+.cn-t1 { background: #0D2818; border-color: rgba(26,155,108,0.3); }
+.cn-t1 .chain-node-name,.cn-t1 .chain-node-items { color: #A0E0C0; }
+.cn-t1 .chain-tier-badge { background: rgba(26,155,108,0.3); color: #50C890; }
+.cn-t1 .chain-node-footer { background: rgba(26,155,108,0.15); color: #50C890; }
+.cn-t1:hover,.cn-t1.active { border-color: var(--green); box-shadow: 0 12px 32px rgba(26,155,108,0.25); }
+
+.cn-end { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); }
+.cn-end .chain-node-name,.cn-end .chain-node-items { color: rgba(255,255,255,0.75); }
+.cn-end .chain-tier-badge { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+.cn-end .chain-node-footer { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); }
+.cn-end:hover,.cn-end.active { border-color: rgba(255,255,255,0.4); }
+
+.chain-detail {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 20px 24px;
+  display: none;
+  animation: fadeUp 0.3s ease;
+}
+.chain-detail.show { display: block; }
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(8px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.chain-detail-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chain-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+.chain-detail-item {
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+.cdi-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  opacity: 0.6;
+}
+.cdi-value {
+  font-size: 12px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.6;
+}
+
+/* ── SIGNAL SECTION ── */
+#signals { background: white; }
+
+.signal-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  background: var(--off);
+  padding: 4px;
+  border-radius: 10px;
+  width: fit-content;
+}
+.signal-tab {
+  padding: 8px 20px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--muted);
+  border: none;
+  background: transparent;
+  font-family: var(--sans);
+}
+.signal-tab.active {
+  background: white;
+  color: var(--navy);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.signal-panel { display: none; }
+.signal-panel.active { display: block; animation: fadeUp 0.3s ease; }
+
+.signal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.signal-card {
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  overflow: hidden;
+  transition: all 0.25s;
+  cursor: pointer;
+}
+.signal-card:hover {
+  border-color: var(--mid);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(26,74,122,0.12);
+}
+.signal-card-top {
+  padding: 16px 18px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.signal-icon-wrap {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.signal-card-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+.signal-card-sub { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+.signal-card-example {
+  margin: 0 18px 16px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  line-height: 1.6;
+  font-family: var(--mono);
+}
+.signal-card-footer {
+  padding: 8px 18px;
+  font-size: 11px;
+  font-weight: 700;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.urgency {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+.urgency-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+
+/* ── PROMPT SECTION ── */
+#prompts { background: var(--navy); }
+#prompts .section-label { color: #90B8D8; }
+#prompts .section-title { color: white; }
+#prompts .section-desc { color: rgba(255,255,255,0.45); }
+
+.prompt-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.prompt-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.6);
+  font-family: var(--sans);
+}
+.prompt-btn:hover {
+  border-color: rgba(255,255,255,0.3);
+  color: white;
+  background: rgba(255,255,255,0.08);
+}
+.prompt-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.prompt-display {
+  display: none;
+  animation: fadeUp 0.3s ease;
+}
+.prompt-display.active { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.prompt-code-block {
+  background: #0A1929;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.prompt-code-header {
+  background: rgba(255,255,255,0.05);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.prompt-code-title { font-size: 12px; color: rgba(255,255,255,0.6); font-family: var(--mono); }
+.copy-btn {
+  font-size: 11px;
+  padding: 4px 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--sans);
+}
+.copy-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+.copy-btn.copied { background: rgba(26,155,108,0.3); border-color: var(--green); color: #50C890; }
+.prompt-code-body {
+  padding: 20px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.75);
+  white-space: pre-wrap;
+}
+.prompt-key { color: #64B5F6; font-weight: 500; }
+.prompt-val { color: #A5D6A7; }
+.prompt-comment { color: rgba(255,255,255,0.35); font-style: italic; }
+
+.prompt-explain {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.explain-item {
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
+  padding: 14px 16px;
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+}
+.explain-item:hover {
+  background: rgba(255,255,255,0.07);
+}
+.explain-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+.explain-text {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.6;
+}
+
+/* ── WORKFLOW SECTION ── */
+#workflow { background: var(--off); }
+
+.workflow-visual {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  position: relative;
+  margin-bottom: 32px;
+}
+.workflow-visual::before {
+  content: '';
+  position: absolute;
+  top: 44px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--mid), var(--accent));
+  z-index: 0;
+}
+.wf-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.wf-node:hover .wf-circle { transform: scale(1.1); }
+.wf-circle {
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 14px;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  position: relative;
+}
+.wf-circle .wf-num {
+  position: absolute;
+  top: -4px; right: -4px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--off);
+}
+.wf-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 4px;
+  color: var(--navy);
+}
+.wf-sublabel {
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.wf-detail-panel {
+  background: white;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  padding: 24px 28px;
+  display: none;
+  animation: fadeUp 0.3s ease;
+}
+.wf-detail-panel.show { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.wf-detail-col { }
+.wf-dc-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--border);
+}
+.wf-dc-item {
+  font-size: 12.5px;
+  padding: 6px 0;
+  color: var(--text);
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  border-bottom: 1px solid var(--off);
+  line-height: 1.5;
+}
+.wf-dc-item::before {
+  content: '›';
+  color: var(--accent);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── ALPHA SECTION ── */
+#alpha { background: white; }
+
+.alpha-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.alpha-card {
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.alpha-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.alpha-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.1);
+}
+.alpha-card-icon { font-size: 28px; margin-bottom: 10px; }
+.alpha-card-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.alpha-card-desc { font-size: 12px; color: var(--muted); line-height: 1.65; }
+.alpha-card-metric {
+  margin-top: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.ac1::before { background: var(--accent); }
+.ac1:hover { border-color: var(--accent); }
+.ac1 .alpha-card-metric { background: #FFF3E0; color: #BF5A00; }
+
+.ac2::before { background: var(--sky); }
+.ac2:hover { border-color: var(--sky); }
+.ac2 .alpha-card-metric { background: #E3F2FD; color: #0D47A1; }
+
+.ac3::before { background: var(--green); }
+.ac3:hover { border-color: var(--green); }
+.ac3 .alpha-card-metric { background: #E8F5E9; color: #1B5E20; }
+
+.ac4::before { background: var(--purple); }
+.ac4:hover { border-color: var(--purple); }
+.ac4 .alpha-card-metric { background: #F3E5F5; color: #4A148C; }
+
+.ac5::before { background: var(--red); }
+.ac5:hover { border-color: var(--red); }
+.ac5 .alpha-card-metric { background: #FFEBEE; color: #880E4F; }
+
+.ac6::before { background: var(--navy); }
+.ac6:hover { border-color: var(--navy); }
+.ac6 .alpha-card-metric { background: #E3F2FD; color: var(--navy); }
+
+/* ── PRINCIPLES SECTION ── */
+#principles { background: var(--navy); }
+#principles .section-label { color: #90B8D8; }
+#principles .section-title { color: white; }
+#principles .section-desc { color: rgba(255,255,255,0.45); }
+
+.principles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.principle-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.25s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.principle-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 100% 0%, rgba(255,255,255,0.03) 0%, transparent 50%);
+}
+.principle-card:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.18);
+  transform: translateY(-2px);
+}
+.principle-num-bg {
+  position: absolute;
+  bottom: -15px; right: 10px;
+  font-size: 80px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.03);
+  line-height: 1;
+  pointer-events: none;
+}
+.principle-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.principle-icon-circle {
+  width: 46px; height: 46px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.principle-title { font-size: 16px; font-weight: 700; color: white; }
+.principle-desc { font-size: 12.5px; color: rgba(255,255,255,0.55); line-height: 1.75; margin-bottom: 12px; }
+.principle-action {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* ── QUOTE ── */
+.quote-section {
+  background: linear-gradient(135deg, #0C1E35 0%, #1A3A5C 100%);
+  padding: 64px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.quote-section::before {
+  content: '"';
+  position: absolute;
+  top: -30px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 240px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.03);
+  line-height: 1;
+  pointer-events: none;
+}
+.quote-text {
+  font-size: 26px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.5;
+  max-width: 700px;
+  margin: 0 auto 16px;
+  position: relative; z-index: 1;
+}
+.quote-text em { font-style: normal; color: var(--accent); }
+.quote-source {
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  position: relative; z-index: 1;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: #060F1A;
+  padding: 24px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-left { font-size: 12px; color: rgba(255,255,255,0.35); }
+.footer-right {
+  display: flex;
+  gap: 16px;
+}
+.footer-right a {
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-right a:hover { color: rgba(255,255,255,0.6); }
+
+/* ── SCROLL TO TOP ── */
+.scroll-top {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  width: 44px; height: 44px;
+  background: var(--mid);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.25s;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 99;
+  display: flex; align-items: center; justify-content: center;
+}
+.scroll-top.show { opacity: 1; pointer-events: all; }
+.scroll-top:hover { background: var(--accent); transform: translateY(-3px); }
+
+/* ── TOOLTIP ── */
+.tooltip {
+  position: fixed;
+  background: var(--navy);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.2s;
+  border: 1px solid rgba(255,255,255,0.1);
+  max-width: 240px;
+  line-height: 1.5;
+}
+.tooltip.show { opacity: 1; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hero { padding: 100px 24px 60px; }
+  .hero h1 { font-size: 32px; }
+  .hero-stats { display: none; }
+  section { padding: 48px 24px; }
+  .chain-container { flex-direction: column; }
+  .chain-arrow { display: none; }
+  .prompt-display.active { grid-template-columns: 1fr; }
+  .signal-grid { grid-template-columns: 1fr; }
+  .alpha-grid { grid-template-columns: 1fr; }
+  .workflow-visual { grid-template-columns: 1fr 1fr; }
+  .workflow-visual::before { display: none; }
+  .principles-grid { grid-template-columns: 1fr; }
+  .chain-detail-grid { grid-template-columns: 1fr; }
+  .wf-detail-panel.show { grid-template-columns: 1fr; }
+  .quote-section { padding: 48px 24px; }
+  .quote-text { font-size: 20px; }
+  footer { flex-direction: column; gap: 12px; padding: 20px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-logo">
+    <div class="dot"></div>
+    AI × 塑化產業 應用指南
+  </div>
+  <ul class="nav-links">
+    <li><a href="#supply">供應鏈</a></li>
+    <li><a href="#signals">訊號監測</a></li>
+    <li><a href="#prompts">Prompt 模板</a></li>
+    <li><a href="#workflow">工作流程</a></li>
+    <li><a href="#alpha">競爭優勢</a></li>
+    <li><a href="#principles">導入原則</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span>●</span> S&P GLOBAL 講座心得 × 塑化產業落地應用
+    </div>
+    <h1>AI × 塑化產業<br><em>產銷管理應用指南</em></h1>
+    <p class="hero-sub">從供應鏈網絡思維到 Prompt Engineering，<br>掌握 AI 時代產銷管理師的新競爭優勢</p>
+    <div class="hero-pills">
+      <span class="hero-pill" onclick="scrollTo('#supply')">🔗 供應鏈動能地圖</span>
+      <span class="hero-pill" onclick="scrollTo('#prompts')">✍️ Prompt 模板</span>
+      <span class="hero-pill" onclick="scrollTo('#signals')">📡 訊號監測</span>
+      <span class="hero-pill" onclick="scrollTo('#alpha')">⚡ 競爭優勢</span>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-card">
+      <div class="stat-num">4<span>–8</span></div>
+      <div class="stat-label">週的資訊領先優勢<br>（追蹤三階供應鏈）</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">60<span>%+</span></div>
+      <div class="stat-label">資料蒐集時間節省<br>（AI 自動整合）</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num"><span>×</span>5</div>
+      <div class="stat-label">報告產出速度提升<br>（Prompt 模板驅動）</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPLY CHAIN -->
+<section id="supply">
+  <div class="section-label">01 供應鏈網絡思維</div>
+  <div class="section-title">塑化產業供應鏈動能地圖</div>
+  <p class="section-desc">點擊各層節點，查看詳細說明、追蹤指標與投資/備料洞察。機會通常藏在二、三階——資訊尚未充分反映之處。</p>
+
+  <div class="chain-container">
+    <div class="chain-node cn-raw" onclick="showChainDetail('raw', this)">
+      <div class="chain-node-header">
+        <div class="chain-tier-badge">原料端</div>
+        <div class="chain-node-name">原油 ／ 天然氣</div>
+        <div class="chain-node-items">WTI / Brent 油價<br>天然氣裂解價差<br>中東 OPEC 政策</div>
+      </div>
+      <div class="chain-node-footer">🔍 最早期訊號</div>
+    </div>
+    <div class="chain-arrow">›</div>
+    <div class="chain-node cn-t3" onclick="showChainDetail('t3', this)">
+      <div class="chain-node-header">
+        <div class="chain-tier-badge">⭐ 三階供應鏈</div>
+        <div class="chain-node-name">石化基礎原料</div>
+        <div class="chain-node-items">乙烯、丙烯、苯<br>氯鹼（燒鹼）<br>電石、丁二烯</div>
+      </div>
+      <div class="chain-node-footer">⚡ 隱藏機會所在</div>
+    </div>
+    <div class="chain-arrow">›</div>
+    <div class="chain-node cn-t2" onclick="showChainDetail('t2', this)">
+      <div class="chain-node-header">
+        <div class="chain-tier-badge">⭐ 二階供應鏈</div>
+        <div class="chain-node-name">塑化中間品</div>
+        <div class="chain-node-items">PE、PP、PVC、ABS<br>PA、PC、POM<br>特殊工程塑料</div>
+      </div>
+      <div class="chain-node-footer">📊 價差追蹤重點</div>
+    </div>
+    <div class="chain-arrow">›</div>
+    <div class="chain-node cn-t1" onclick="showChainDetail('t1', this)">
+      <div class="chain-node-header">
+        <div class="chain-tier-badge">一階供應鏈</div>
+        <div class="chain-node-name">塑膠加工廠</div>
+        <div class="chain-node-items">射出成型<br>押出加工<br>吹膜 / 壓延</div>
+      </div>
+      <div class="chain-node-footer">📦 訂單直接指標</div>
+    </div>
+    <div class="chain-arrow">›</div>
+    <div class="chain-node cn-end" onclick="showChainDetail('end', this)">
+      <div class="chain-node-header">
+        <div class="chain-tier-badge">終端需求</div>
+        <div class="chain-node-name">下游產業市場</div>
+        <div class="chain-node-items">汽車 / 電動車<br>家電 / 3C<br>建材 / 包裝 / 醫療</div>
+      </div>
+      <div class="chain-node-footer">🎯 需求源頭</div>
+    </div>
+  </div>
+
+  <div class="chain-detail" id="chain-detail-raw">
+    <div class="chain-detail-title">🛢️ 原油／天然氣層 — 最上游的宏觀訊號</div>
+    <div class="chain-detail-grid">
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:#FF8080;">追蹤指標</div>
+        <div class="cdi-value">WTI / Brent 油價週變化<br>天然氣-石腦油價差<br>OPEC 產量決議<br>美元指數（影響油價）</div>
+      </div>
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:#FF8080;">對塑化的影響</div>
+        <div class="cdi-value">油價上漲 → 石腦油成本上升 → 乙烯生產成本提高 → 塑化原料全面漲價壓力</div>
+      </div>
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:#FF8080;">建議行動</div>
+        <div class="cdi-value">設置油價警示（每週 +/-5%）<br>提前評估備料時機<br>與採購部門共享油價週報</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chain-detail" id="chain-detail-t3">
+    <div class="chain-detail-title">⚡ 三階供應鏈 — 最高價值的隱藏訊號層</div>
+    <div class="chain-detail-grid">
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:#FFA040;">追蹤指標</div>
+        <div class="cdi-value">乙烯-石腦油價差<br>燒鹼（NaOH）現貨價<br>己二酸報價（PA 原料）<br>雙酚A（BPA）供需</div>
+      </div>
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:#FFA040;">典型案例</div>
+        <div class="cdi-value">電動車需求增 → PC 需求增 → 雙酚A吃緊 → 比 PC 報價早 6 週反應<br>此時備料成本最低</div>
+      </div>
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:#FFA040;">AI 應用</div>
+        <div class="cdi-value">Prompt：追蹤燒鹼、己二酸、雙酚A每週報價變化，若異動超過 3%，自動觸發警示摘要</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chain-detail" id="chain-detail-t2">
+    <div class="chain-detail-title">📊 二階供應鏈 — 核心產品的價差與庫存</div>
+    <div class="chain-detail-grid">
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:#70B0E0;">追蹤指標</div>
+        <div class="cdi-value">PE/PP/PVC 亞洲 CFR 報價<br>中國華東港口庫存天數<br>裂解廠開工率<br>主要廠商停開車公告</div>
+      </div>
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:#70B0E0;">關鍵判斷</div>
+        <div class="cdi-value">庫存天數 &lt;20 天 → 供給偏緊，價格有上漲動能<br>庫存天數 &gt;35 天 → 供給寬鬆，降價壓力增加</div>
+      </div>
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:#70B0E0;">AI 應用</div>
+        <div class="cdi-value">每週自動彙整 PE/PP/PVC 三大品項報價、庫存變化，輸出「漲 / 平 / 跌」方向標籤與備料建議</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chain-detail" id="chain-detail-t1">
+    <div class="chain-detail-title">📦 一階供應鏈 — 最直接但最晚反應的訂單層</div>
+    <div class="chain-detail-grid">
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:#50C890;">追蹤指標</div>
+        <div class="cdi-value">下遊加工廠開工率<br>塑件訂單能見度<br>模具投資動向<br>客戶庫存水位回報</div>
+      </div>
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:#50C890;">注意事項</div>
+        <div class="cdi-value">此層資訊通常已充分反映在市場報價中，反應較慢；適合做訂單確認，不適合做早期預警</div>
+      </div>
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:#50C890;">AI 應用</div>
+        <div class="cdi-value">整合客戶訂單系統數據，AI 自動計算各客戶補庫週期，預測下週下單機率</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chain-detail" id="chain-detail-end">
+    <div class="chain-detail-title">🎯 終端需求層 — 需求源頭的宏觀判斷</div>
+    <div class="chain-detail-grid">
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:rgba(255,255,255,0.5);">追蹤指標</div>
+        <div class="cdi-value">汽車月銷量 / 電動車滲透率<br>家電零售數據<br>PMI 採購指數<br>房地產新開工面積</div>
+      </div>
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:rgba(255,255,255,0.5);">需求傳導時間</div>
+        <div class="cdi-value">終端需求變化 → 加工廠訂單：約 2–4 週<br>→ 中間品報價：約 4–8 週<br>→ 三階原料：約 8–12 週</div>
+      </div>
+      <div class="chain-detail-item">
+        <div class="cdi-label" style="color:rgba(255,255,255,0.5);">AI 應用</div>
+        <div class="cdi-value">自動爬取汽車銷量、PMI 數據，結合歷史規律，預測 6–8 週後的塑化需求方向</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNALS -->
+<section id="signals">
+  <div class="section-label">02 訊號監測系統</div>
+  <div class="section-title">四大核心訊號追蹤</div>
+  <p class="section-desc">「變化比數值更重要」——與其關注絕對數字，更應該追蹤方向與速度的變化。點選各訊號類型查看具體指標與案例。</p>
+
+  <div class="signal-tabs">
+    <button class="signal-tab active" onclick="showSignal('demand', this)">📈 需求訊號</button>
+    <button class="signal-tab" onclick="showSignal('price', this)">💰 價格訊號</button>
+    <button class="signal-tab" onclick="showSignal('capacity', this)">🏭 產能訊號</button>
+    <button class="signal-tab" onclick="showSignal('inventory', this)">📦 庫存訊號</button>
+  </div>
+
+  <div class="signal-panel active" id="sp-demand">
+    <div class="signal-grid">
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#E3F2FD;">🚗</div>
+          <div>
+            <div class="signal-card-title">汽車產業需求</div>
+            <div class="signal-card-sub">汽車月銷量 × 電動車滲透率 × PMI</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#E3F2FD;color:#0D47A1;">
+          → 汽車 PMI 連續兩個月下滑至 48，預判 PP 車用件需求將在 4 週後收縮，建議降低備料水位
+        </div>
+        <div class="signal-card-footer" style="color:#0D47A1;">
+          <span>每月追蹤一次</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#2196F3;"></div>
+            <div class="urgency-dot" style="background:#2196F3;"></div>
+            <div class="urgency-dot" style="background:#E0E0E0;"></div>
+            <span style="font-size:10px;margin-left:4px;">中重要性</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#E8F5E9;">🏠</div>
+          <div>
+            <div class="signal-card-title">建材 / 房地產需求</div>
+            <div class="signal-card-sub">新開工面積 × 竣工面積 × 銷售數據</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#E8F5E9;color:#1B5E20;">
+          → 中國房地產新開工面積連三個月同比下滑 15%，PVC 管材需求下行壓力顯現，關注庫存累積風險
+        </div>
+        <div class="signal-card-footer" style="color:#1B5E20;">
+          <span>每月追蹤</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#4CAF50;"></div>
+            <div class="urgency-dot" style="background:#4CAF50;"></div>
+            <div class="urgency-dot" style="background:#4CAF50;"></div>
+            <span style="font-size:10px;margin-left:4px;">高重要性</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#FFF3E0;">📱</div>
+          <div>
+            <div class="signal-card-title">家電 / 3C 需求</div>
+            <div class="signal-card-sub">家電出口量 × 3C 出貨預測 × 品牌庫存</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#FFF3E0;color:#BF5A00;">
+          → Apple 供應鏈消息顯示 iPhone 備貨量超預期，ABS 外殼料需求看增，評估提前備料
+        </div>
+        <div class="signal-card-footer" style="color:#BF5A00;">
+          <span>每季追蹤</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#FF9800;"></div>
+            <div class="urgency-dot" style="background:#FF9800;"></div>
+            <div class="urgency-dot" style="background:#E0E0E0;"></div>
+            <span style="font-size:10px;margin-left:4px;">中重要性</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#F3E5F5;">⚡</div>
+          <div>
+            <div class="signal-card-title">電動車 / 新能源需求</div>
+            <div class="signal-card-sub">EV 滲透率 × 電池產能 × 充電樁建設</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#F3E5F5;color:#6A1B9A;">
+          → 歐盟電動車補貼政策通過，工程塑料（PA/POM）需求前景看好，關注二、三階原料供給
+        </div>
+        <div class="signal-card-footer" style="color:#6A1B9A;">
+          <span>持續追蹤政策面</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#9C27B0;"></div>
+            <div class="urgency-dot" style="background:#9C27B0;"></div>
+            <div class="urgency-dot" style="background:#9C27B0;"></div>
+            <span style="font-size:10px;margin-left:4px;">高重要性</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-panel" id="sp-price">
+    <div class="signal-grid">
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#FFF3E0;">📉</div>
+          <div>
+            <div class="signal-card-title">乙烯 / 石腦油價差</div>
+            <div class="signal-card-sub">裂解廠獲利指標，直接影響乙烯供給意願</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#FFF3E0;color:#BF5A00;">
+          → 乙烯-石腦油價差收窄至 $180/噸，低於損益兩平點 $200，裂解廠考慮減產，乙烯供給收緊訊號
+        </div>
+        <div class="signal-card-footer" style="color:#BF5A00;">
+          <span>每週追蹤</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#FF5722;"></div>
+            <div class="urgency-dot" style="background:#FF5722;"></div>
+            <div class="urgency-dot" style="background:#FF5722;"></div>
+            <span style="font-size:10px;margin-left:4px;">極高重要性</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#E3F2FD;">🌊</div>
+          <div>
+            <div class="signal-card-title">亞洲 CFR 報價趨勢</div>
+            <div class="signal-card-sub">PE/PP/PVC 到岸價格週變化幅度</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#E3F2FD;color:#0D47A1;">
+          → PP 亞洲 CFR 連續三週上漲，累計漲幅 8%，但中國港口庫存未見下降，警惕價格反轉風險
+        </div>
+        <div class="signal-card-footer" style="color:#0D47A1;">
+          <span>每週追蹤</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#2196F3;"></div>
+            <div class="urgency-dot" style="background:#2196F3;"></div>
+            <div class="urgency-dot" style="background:#2196F3;"></div>
+            <span style="font-size:10px;margin-left:4px;">高重要性</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#FFEBEE;">🔥</div>
+          <div>
+            <div class="signal-card-title">特殊原料（三階）報價</div>
+            <div class="signal-card-sub">燒鹼、己二酸、雙酚A、MDI 價格</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#FFEBEE;color:#880E4F;">
+          → 雙酚A（BPA）現貨報價兩週內上漲 12%，PC 料漲價預期升溫，建議提前鎖定長約採購
+        </div>
+        <div class="signal-card-footer" style="color:#880E4F;">
+          <span>每週追蹤</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#E91E63;"></div>
+            <div class="urgency-dot" style="background:#E91E63;"></div>
+            <div class="urgency-dot" style="background:#E91E63;"></div>
+            <span style="font-size:10px;margin-left:4px;">極高重要性</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#E8F5E9;">💱</div>
+          <div>
+            <div class="signal-card-title">匯率 / 運費影響</div>
+            <div class="signal-card-sub">人民幣匯率 × 波羅的海運費指數</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#E8F5E9;color:#1B5E20;">
+          → 波羅的海乾散貨指數上升 20%，進口原料到貨成本增加，評估是否提前備貨以規避運費風險
+        </div>
+        <div class="signal-card-footer" style="color:#1B5E20;">
+          <span>每月評估</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#4CAF50;"></div>
+            <div class="urgency-dot" style="background:#4CAF50;"></div>
+            <div class="urgency-dot" style="background:#E0E0E0;"></div>
+            <span style="font-size:10px;margin-left:4px;">中重要性</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-panel" id="sp-capacity">
+    <div class="signal-grid">
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#F3E5F5;">🏭</div>
+          <div>
+            <div class="signal-card-title">競爭對手開停車公告</div>
+            <div class="signal-card-sub">台塑、南亞、李長榮等主要廠商動態</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#F3E5F5;color:#6A1B9A;">
+          → 南亞 PVC 廠預計 Q3 進行 3 週定檢停車，亞洲供給缺口約 3 萬噸，短期支撐價格上行
+        </div>
+        <div class="signal-card-footer" style="color:#6A1B9A;">
+          <span>即時追蹤</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#9C27B0;"></div>
+            <div class="urgency-dot" style="background:#9C27B0;"></div>
+            <div class="urgency-dot" style="background:#9C27B0;"></div>
+            <span style="font-size:10px;margin-left:4px;">高重要性</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#FFF3E0;">🇨🇳</div>
+          <div>
+            <div class="signal-card-title">中國新增產能投產</div>
+            <div class="signal-card-sub">大陸新裝置投產時程與規模追蹤</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#FFF3E0;color:#BF5A00;">
+          → 大陸某石化 80 萬噸 PP 新裝置 Q3 投產，亞洲 PP 供給壓力增加，建議降低長約比例、增加現貨彈性
+        </div>
+        <div class="signal-card-footer" style="color:#BF5A00;">
+          <span>每季評估</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#FF9800;"></div>
+            <div class="urgency-dot" style="background:#FF9800;"></div>
+            <div class="urgency-dot" style="background:#FF9800;"></div>
+            <span style="font-size:10px;margin-left:4px;">高重要性</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#E3F2FD;">⚡</div>
+          <div>
+            <div class="signal-card-title">能源政策 / 限電影響</div>
+            <div class="signal-card-sub">電力管制、碳排配額對開工率影響</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#E3F2FD;color:#0D47A1;">
+          → 中國限電政策重啟，華東地區 PVC 電石法開工率從 75% 降至 60%，短期供給收縮明顯
+        </div>
+        <div class="signal-card-footer" style="color:#0D47A1;">
+          <span>即時關注</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#2196F3;"></div>
+            <div class="urgency-dot" style="background:#2196F3;"></div>
+            <div class="urgency-dot" style="background:#2196F3;"></div>
+            <span style="font-size:10px;margin-left:4px;">高重要性</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#E8F5E9;">🌍</div>
+          <div>
+            <div class="signal-card-title">全球產能利用率</div>
+            <div class="signal-card-sub">主要生產國整體開工率水位</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#E8F5E9;color:#1B5E20;">
+          → 亞洲 PE 整體開工率升至 88%，接近滿載；任何突發停車將造成顯著缺貨，建議提高安全庫存
+        </div>
+        <div class="signal-card-footer" style="color:#1B5E20;">
+          <span>每月評估</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#4CAF50;"></div>
+            <div class="urgency-dot" style="background:#4CAF50;"></div>
+            <div class="urgency-dot" style="background:#E0E0E0;"></div>
+            <span style="font-size:10px;margin-left:4px;">中重要性</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signal-panel" id="sp-inventory">
+    <div class="signal-grid">
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#E8F5E9;">⚓</div>
+          <div>
+            <div class="signal-card-title">港口庫存天數</div>
+            <div class="signal-card-sub">華東港口 PE/PP/PVC 庫存水位</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#E8F5E9;color:#1B5E20;">
+          → 華東 PVC 港口庫存降至 18 天（低於季節性均值 25 天），補庫需求浮現，未來 2–3 週報價有支撐
+        </div>
+        <div class="signal-card-footer" style="color:#1B5E20;">
+          <span>每週追蹤</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#4CAF50;"></div>
+            <div class="urgency-dot" style="background:#4CAF50;"></div>
+            <div class="urgency-dot" style="background:#4CAF50;"></div>
+            <span style="font-size:10px;margin-left:4px;">高重要性</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#FFF3E0;">🏗️</div>
+          <div>
+            <div class="signal-card-title">下游客戶庫存回報</div>
+            <div class="signal-card-sub">主要客戶的庫存水位與補庫週期</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#FFF3E0;color:#BF5A00;">
+          → 前三大客戶反映庫存偏低，預計本月補庫；結合港口數據，未來 3 週需求端支撐較強，適度備料
+        </div>
+        <div class="signal-card-footer" style="color:#BF5A00;">
+          <span>每月客戶訪談</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#FF9800;"></div>
+            <div class="urgency-dot" style="background:#FF9800;"></div>
+            <div class="urgency-dot" style="background:#FF9800;"></div>
+            <span style="font-size:10px;margin-left:4px;">高重要性</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#E3F2FD;">🚢</div>
+          <div>
+            <div class="signal-card-title">進口貨船到港預報</div>
+            <div class="signal-card-sub">未來 4 週進港船期與數量預估</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#E3F2FD;color:#0D47A1;">
+          → 未來 4 週 PP 進港量預計大增 40%，供給壓力顯著，建議暫緩補庫、等待價格回檔機會
+        </div>
+        <div class="signal-card-footer" style="color:#0D47A1;">
+          <span>每週追蹤</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#2196F3;"></div>
+            <div class="urgency-dot" style="background:#2196F3;"></div>
+            <div class="urgency-dot" style="background:#2196F3;"></div>
+            <span style="font-size:10px;margin-left:4px;">高重要性</span>
+          </div>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="signal-card-top">
+          <div class="signal-icon-wrap" style="background:#F3E5F5;">📊</div>
+          <div>
+            <div class="signal-card-title">整體供需平衡表</div>
+            <div class="signal-card-sub">月度供需缺口估算與庫存變動</div>
+          </div>
+        </div>
+        <div class="signal-card-example" style="background:#F3E5F5;color:#6A1B9A;">
+          → Q3 PE 供需平衡表顯示供給過剩約 15 萬噸，疊加需求淡季，三季度報價承壓，建議控制庫存水位
+        </div>
+        <div class="signal-card-footer" style="color:#6A1B9A;">
+          <span>每季更新</span>
+          <div class="urgency">
+            <div class="urgency-dot" style="background:#9C27B0;"></div>
+            <div class="urgency-dot" style="background:#9C27B0;"></div>
+            <div class="urgency-dot" style="background:#E0E0E0;"></div>
+            <span style="font-size:10px;margin-left:4px;">中重要性</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMPTS -->
+<section id="prompts">
+  <div class="section-label">03 Prompt Engineering</div>
+  <div class="section-title">塑化產業專用 Prompt 模板</div>
+  <p class="section-desc">好的 Prompt 需要四要素：角色、任務、資料規則、輸出格式。點選模板查看完整範例，可直接複製使用。</p>
+
+  <div class="prompt-selector">
+    <button class="prompt-btn active" onclick="showPrompt('weekly', this)">📊 原料市場週報</button>
+    <button class="prompt-btn" onclick="showPrompt('demand', this)">📉 下游需求預警</button>
+    <button class="prompt-btn" onclick="showPrompt('competitor', this)">🏭 競爭對手分析</button>
+  </div>
+
+  <div class="prompt-display active" id="pp-weekly">
+    <div class="prompt-code-block">
+      <div class="prompt-code-header">
+        <span class="prompt-code-title">prompt_template.txt — 原料市場週報摘要</span>
+        <button class="copy-btn" onclick="copyPrompt('weekly-text', this)">複製</button>
+      </div>
+      <div class="prompt-code-body" id="weekly-text"><span class="prompt-key">【角色與背景】</span>
+<span class="prompt-val">你是一位專注於亞洲石化市場的產業分析師，
+服務於台灣某塑化原料貿易公司的產銷管理部門。</span>
+
+<span class="prompt-key">【你的任務】</span>
+<span class="prompt-val">整理本週 PE、PP、PVC 三大品項的亞洲市場動態，
+重點標示每個品項的價格變化方向（漲/平/跌）
+與主要驅動因素（供給端/需求端/政策面）。</span>
+
+<span class="prompt-key">【資料蒐集規則】</span>
+<span class="prompt-val">主要資料來源：中國石化新聞網、ICIS、隆眾資訊
+時間範圍：本週（請標記報告截止日期）
+貨幣單位：統一換算為美元/公噸
+每條資訊須附來源引用與資料日期</span>
+
+<span class="prompt-key">【輸出規範】</span>
+<span class="prompt-val">格式：三品項各一段摘要（每段不超過 150 字）
+最後附上「本週最值得關注的一個訊號」
+結尾給出備料方向建議（增加/維持/降低）</span>
+
+<span class="prompt-comment">＊ 如無法取得某項資料，請明確說明並標示「資料待確認」</span></div>
+    </div>
+    <div class="prompt-explain">
+      <div class="explain-item" style="border-color:#64B5F6;">
+        <div class="explain-label" style="color:#64B5F6;">角色設定的作用</div>
+        <div class="explain-text">明確「亞洲石化市場分析師」的角色，讓 AI 以該領域的專業術語和分析框架來組織回答，而非泛泛而談。</div>
+      </div>
+      <div class="explain-item" style="border-color:#A5D6A7;">
+        <div class="explain-label" style="color:#A5D6A7;">為何要指定三大品項</div>
+        <div class="explain-text">聚焦 PE/PP/PVC 可避免 AI 泛泛整理所有塑化品項，讓輸出的深度和實用性大幅提升。</div>
+      </div>
+      <div class="explain-item" style="border-color:#FFCC80;">
+        <div class="explain-label" style="color:#FFCC80;">資料規則的重要性</div>
+        <div class="explain-text">指定「ICIS、隆眾資訊」等可信來源，確保 AI 不會自行捏造報價。加上時間戳記可追溯性。</div>
+      </div>
+      <div class="explain-item" style="border-color:#CE93D8;">
+        <div class="explain-label" style="color:#CE93D8;">備料建議的設計</div>
+        <div class="explain-text">強制要求輸出「增加/維持/降低」的結論，讓報告從「資訊整理」升級為「決策支援」。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prompt-display" id="pp-demand">
+    <div class="prompt-code-block">
+      <div class="prompt-code-header">
+        <span class="prompt-code-title">prompt_template.txt — 下游需求預警分析</span>
+        <button class="copy-btn" onclick="copyPrompt('demand-text', this)">複製</button>
+      </div>
+      <div class="prompt-code-body" id="demand-text"><span class="prompt-key">【角色與背景】</span>
+<span class="prompt-val">你是本公司的產銷管理師，負責監測下游客戶
+所在產業的需求動態，以支援備料與排產決策。</span>
+
+<span class="prompt-key">【你的任務】</span>
+<span class="prompt-val">針對汽車、家電、建材三大終端產業，分析
+近期需求是擴張還是收縮趨勢，並預判這種
+變化對我們 PE、PP、PVC 出貨量的影響。</span>
+
+<span class="prompt-key">【資料蒐集規則】</span>
+<span class="prompt-val">主要來源：最新 PMI 採購指數、海關出口數據
+次要來源：重點客戶法說會記錄摘要
+時間範圍：最近一個月數據
+時間戳：標明每筆數據的發布日期</span>
+
+<span class="prompt-key">【輸出規範】</span>
+<span class="prompt-val">格式：三大產業各一段評估（100 字以內）
+每段需包含：方向（擴張/收縮）+ 程度（明顯/輕微）
+最後輸出備料建議表格：
+品項 | 方向 | 建議調整幅度 | 時間範圍</span>
+
+<span class="prompt-comment">＊ 若資料不足，請說明限制並給出保守估計</span></div>
+    </div>
+    <div class="prompt-explain">
+      <div class="explain-item" style="border-color:#64B5F6;">
+        <div class="explain-label" style="color:#64B5F6;">三大產業的選擇邏輯</div>
+        <div class="explain-text">汽車（PP/ABS）、家電（ABS/PS）、建材（PVC）是塑化最主要的三個終端，覆蓋 70%+ 的需求。</div>
+      </div>
+      <div class="explain-item" style="border-color:#A5D6A7;">
+        <div class="explain-label" style="color:#A5D6A7;">PMI 指數的解讀</div>
+        <div class="explain-text">PMI &gt; 50 代表擴張，&lt; 50 代表收縮。要求 AI 結合 PMI 與法說會，避免單一指標的誤判。</div>
+      </div>
+      <div class="explain-item" style="border-color:#FFCC80;">
+        <div class="explain-label" style="color:#FFCC80;">表格輸出的價值</div>
+        <div class="explain-text">強制要求「品項 × 方向 × 調整幅度 × 時間」的表格格式，讓採購部門可以直接使用，減少二次整理。</div>
+      </div>
+      <div class="explain-item" style="border-color:#CE93D8;">
+        <div class="explain-label" style="color:#CE93D8;">Human Loop 提醒</div>
+        <div class="explain-text">此模板的輸出僅為參考，最終備料決策仍需由產銷管理師結合客戶溝通和市場感知來確認。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prompt-display" id="pp-competitor">
+    <div class="prompt-code-block">
+      <div class="prompt-code-header">
+        <span class="prompt-code-title">prompt_template.txt — 競爭對手動態追蹤</span>
+        <button class="copy-btn" onclick="copyPrompt('competitor-text', this)">複製</button>
+      </div>
+      <div class="prompt-code-body" id="competitor-text"><span class="prompt-key">【角色與背景】</span>
+<span class="prompt-val">你是一位塑化產業競爭情報分析師，專注於
+台灣及亞洲主要塑化廠商的策略動態追蹤。</span>
+
+<span class="prompt-key">【你的任務】</span>
+<span class="prompt-val">整理台塑、南亞、李長榮三家主要競爭對手
+本季在產能調整、報價策略與客戶動態上的
+最新進展，並評估對我方業務的潛在影響。</span>
+
+<span class="prompt-key">【資料蒐集規則】</span>
+<span class="prompt-val">主要來源：公開財報、法說會記錄、重訊公告
+次要來源：產業媒體（塑膠資訊、化工在線）
+排除：未經可信媒體證實的市場傳言
+每條資訊標記：來源名稱 + 發布日期</span>
+
+<span class="prompt-key">【輸出規範】</span>
+<span class="prompt-val">格式：每家公司三個重點觀察（條列式）
+各觀察需標示：事實陳述 + 對我方的影響評估
+最後附上：對我方本季定價策略的建議方向
+（激進進攻 / 穩守份額 / 防禦性降價）</span>
+
+<span class="prompt-comment">＊ 嚴格區分「已確認事實」與「市場推測」</span></div>
+    </div>
+    <div class="prompt-explain">
+      <div class="explain-item" style="border-color:#64B5F6;">
+        <div class="explain-label" style="color:#64B5F6;">競品選擇的聚焦</div>
+        <div class="explain-text">只追蹤三家最直接的競爭對手，避免資訊過載。可依實際需求替換為其他廠商名稱。</div>
+      </div>
+      <div class="explain-item" style="border-color:#A5D6A7;">
+        <div class="explain-label" style="color:#A5D6A7;">排除傳言的設計</div>
+        <div class="explain-text">明確指示「排除未經證實的傳言」是關鍵，防止 AI 混入不實資訊，確保情報可信度。</div>
+      </div>
+      <div class="explain-item" style="border-color:#FFCC80;">
+        <div class="explain-label" style="color:#FFCC80;">事實 vs 推測的區分</div>
+        <div class="explain-text">要求 AI 嚴格區分「已確認事實」與「市場推測」，讓讀者能判斷各條資訊的可靠程度。</div>
+      </div>
+      <div class="explain-item" style="border-color:#CE93D8;">
+        <div class="explain-label" style="color:#CE93D8;">策略建議三選一</div>
+        <div class="explain-text">強制要求輸出「激進/穩守/防禦」三選一的策略方向，逼出具體結論，避免 AI 模糊回答。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKFLOW -->
+<section id="workflow">
+  <div class="section-label">04 工作流程升級</div>
+  <div class="section-title">AI 輔助產銷管理五步驟</div>
+  <p class="section-desc">點選各步驟節點，查看具體工具、注意事項與 AI 的角色定位。記住：AI 整理資訊，人做最終判斷。</p>
+
+  <div class="workflow-visual">
+    <div class="wf-node" onclick="showWfDetail('collect', this)">
+      <div class="wf-circle" style="background:#EBF4FC;">
+        🗂️<div class="wf-num">1</div>
+      </div>
+      <div class="wf-label">資料蒐集</div>
+      <div class="wf-sublabel" style="background:#E3F2FD;color:#0D47A1;">AI 自動整合</div>
+    </div>
+    <div class="wf-node" onclick="showWfDetail('process', this)">
+      <div class="wf-circle" style="background:#FFF3E0;">
+        ✍️<div class="wf-num">2</div>
+      </div>
+      <div class="wf-label">AI 整理摘要</div>
+      <div class="wf-sublabel" style="background:#FFF3E0;color:#BF5A00;">Prompt 驅動</div>
+    </div>
+    <div class="wf-node" onclick="showWfDetail('signal', this)">
+      <div class="wf-circle" style="background:#F3E5F5;">
+        📡<div class="wf-num">3</div>
+      </div>
+      <div class="wf-label">訊號抽取</div>
+      <div class="wf-sublabel" style="background:#F3E5F5;color:#6A1B9A;">變化 &gt; 數值</div>
+    </div>
+    <div class="wf-node" onclick="showWfDetail('chain', this)">
+      <div class="wf-circle" style="background:#E8F5E9;">
+        🔗<div class="wf-num">4</div>
+      </div>
+      <div class="wf-label">供應鏈延伸</div>
+      <div class="wf-sublabel" style="background:#E8F5E9;color:#1B5E20;">網絡思維</div>
+    </div>
+    <div class="wf-node" onclick="showWfDetail('decide', this)">
+      <div class="wf-circle" style="background:var(--navy);">
+        👤<div class="wf-num" style="background:white;color:var(--navy);">5</div>
+      </div>
+      <div class="wf-label" style="color:var(--navy);">人工決策</div>
+      <div class="wf-sublabel" style="background:var(--navy);color:white;">Human Loop</div>
+    </div>
+  </div>
+
+  <div class="wf-detail-panel" id="wfd-collect">
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">資料來源</div>
+      <div class="wf-dc-item">ICIS、隆眾資訊（行情報價）</div>
+      <div class="wf-dc-item">中國石化新聞網（產業動態）</div>
+      <div class="wf-dc-item">公司 ERP / 訂單系統</div>
+      <div class="wf-dc-item">法說會文字稿（季度）</div>
+    </div>
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">格式要求</div>
+      <div class="wf-dc-item">統一轉換為 Markdown 格式</div>
+      <div class="wf-dc-item">每筆資料標記時間戳記</div>
+      <div class="wf-dc-item">貨幣與單位標準化</div>
+      <div class="wf-dc-item">來源引用完整保留</div>
+    </div>
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">注意事項</div>
+      <div class="wf-dc-item">敏感資料不輸入公共 AI</div>
+      <div class="wf-dc-item">確認資料為最新版本</div>
+      <div class="wf-dc-item">不同來源的格式統一</div>
+      <div class="wf-dc-item">建立資料更新頻率規範</div>
+    </div>
+  </div>
+
+  <div class="wf-detail-panel" id="wfd-process">
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">AI 可做的事</div>
+      <div class="wf-dc-item">多來源資訊整合摘要</div>
+      <div class="wf-dc-item">格式標準化輸出</div>
+      <div class="wf-dc-item">法說會重點萃取</div>
+      <div class="wf-dc-item">競品資訊條列整理</div>
+    </div>
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">工具建議</div>
+      <div class="wf-dc-item">Claude / ChatGPT（企業版）</div>
+      <div class="wf-dc-item">預建 Prompt 模板庫</div>
+      <div class="wf-dc-item">固定輸出格式模板</div>
+      <div class="wf-dc-item">API 串接自動化（進階）</div>
+    </div>
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">品質控制</div>
+      <div class="wf-dc-item">要求 AI 附上來源引用</div>
+      <div class="wf-dc-item">標記「資料待確認」項目</div>
+      <div class="wf-dc-item">避免讓 AI 自行推斷數字</div>
+      <div class="wf-dc-item">輸出後進行人工抽查</div>
+    </div>
+  </div>
+
+  <div class="wf-detail-panel" id="wfd-signal">
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">四大核心訊號</div>
+      <div class="wf-dc-item">需求訊號（PMI、終端銷量）</div>
+      <div class="wf-dc-item">價格訊號（CFR 報價週變化）</div>
+      <div class="wf-dc-item">產能訊號（開停車、新產能）</div>
+      <div class="wf-dc-item">庫存訊號（港口天數、補庫）</div>
+    </div>
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">訊號判斷原則</div>
+      <div class="wf-dc-item">變化方向 > 絕對數值</div>
+      <div class="wf-dc-item">多訊號共振 > 單一訊號</div>
+      <div class="wf-dc-item">速度（快慢）也是訊號</div>
+      <div class="wf-dc-item">異常偏離歷史均值需特別注意</div>
+    </div>
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">警示設置建議</div>
+      <div class="wf-dc-item">報價週變化 ±5% 觸發警示</div>
+      <div class="wf-dc-item">庫存天數偏離均值 20% 警示</div>
+      <div class="wf-dc-item">重要廠商停車公告即時通知</div>
+      <div class="wf-dc-item">PMI 連續兩月同向變化提醒</div>
+    </div>
+  </div>
+
+  <div class="wf-detail-panel" id="wfd-chain">
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">延伸分析方向</div>
+      <div class="wf-dc-item">上游：原料成本傳導路徑</div>
+      <div class="wf-dc-item">下游：終端需求傳遞時間</div>
+      <div class="wf-dc-item">橫向：替代品競爭關係</div>
+      <div class="wf-dc-item">地理：亞洲 vs. 歐美市場差異</div>
+    </div>
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">塑化特有的二、三階</div>
+      <div class="wf-dc-item">燒鹼 → PVC（三階）</div>
+      <div class="wf-dc-item">雙酚A → PC 料（三階）</div>
+      <div class="wf-dc-item">己二酸 → PA 料（三階）</div>
+      <div class="wf-dc-item">乙烯價差 → PE/PP（二階）</div>
+    </div>
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">傳導時間估算</div>
+      <div class="wf-dc-item">終端需求 → 加工廠：2–4 週</div>
+      <div class="wf-dc-item">加工廠 → 中間品報價：4–8 週</div>
+      <div class="wf-dc-item">中間品 → 三階原料：8–12 週</div>
+      <div class="wf-dc-item">提早布局三階 = 最低成本</div>
+    </div>
+  </div>
+
+  <div class="wf-detail-panel" id="wfd-decide">
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">人必須負責的決策</div>
+      <div class="wf-dc-item">最終備料數量與時機</div>
+      <div class="wf-dc-item">報價策略（漲/平/讓）</div>
+      <div class="wf-dc-item">客戶優先順序排配</div>
+      <div class="wf-dc-item">風險承擔與例外處理</div>
+    </div>
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">Human Loop 的具體實踐</div>
+      <div class="wf-dc-item">AI 報告發出前人工審閱</div>
+      <div class="wf-dc-item">數字來源逐筆確認</div>
+      <div class="wf-dc-item">異常結論須標記審核</div>
+      <div class="wf-dc-item">決策記錄留存可追溯</div>
+    </div>
+    <div class="wf-detail-col">
+      <div class="wf-dc-title">人的不可取代價值</div>
+      <div class="wf-dc-item">客戶關係與隱性資訊</div>
+      <div class="wf-dc-item">產業直覺與經驗判斷</div>
+      <div class="wf-dc-item">跨部門溝通與協調</div>
+      <div class="wf-dc-item">突發狀況的即時應對</div>
+    </div>
+  </div>
+</section>
+
+<!-- ALPHA -->
+<section id="alpha">
+  <div class="section-label">05 競爭優勢重構</div>
+  <div class="section-title">AI 時代塑化產銷的新 Alpha</div>
+  <p class="section-desc">當所有人都開始使用 AI，優勢不在於「有沒有工具」，而在於「如何更聰明地使用工具」。點選各卡片查看詳細說明。</p>
+
+  <div class="alpha-grid">
+    <div class="alpha-card ac1" onclick="toggleAlpha(this)">
+      <div class="alpha-card-icon">⚡</div>
+      <div class="alpha-card-title">操作效率提升</div>
+      <div class="alpha-card-desc">AI 自動整理週報、摘要法說會、彙整競品數據，節省大量重複性工作時間，讓人員專注在判斷與客戶關係上。</div>
+      <div class="alpha-card-metric">⏱ 資料整理時間節省 60%+</div>
+    </div>
+    <div class="alpha-card ac2" onclick="toggleAlpha(this)">
+      <div class="alpha-card-icon">🔭</div>
+      <div class="alpha-card-title">三階供應鏈預見力</div>
+      <div class="alpha-card-desc">系統化追蹤燒鹼、雙酚A、己二酸等三階原料訊號，比競爭對手早 4–8 週預判中間品報價走勢，提前完成備料布局。</div>
+      <div class="alpha-card-metric">📅 資訊領先優勢 4–8 週</div>
+    </div>
+    <div class="alpha-card ac3" onclick="toggleAlpha(this)">
+      <div class="alpha-card-icon">🎙️</div>
+      <div class="alpha-card-title">法說會語境分析</div>
+      <div class="alpha-card-desc">LLM 可分析管理層語氣轉變（「謹慎樂觀」→「審慎因應」），偵測是否迴避分析師問題，挖掘財報數字以外的隱性訊號。</div>
+      <div class="alpha-card-metric">🔍 捕捉數字背後的語氣訊號</div>
+    </div>
+    <div class="alpha-card ac4" onclick="toggleAlpha(this)">
+      <div class="alpha-card-icon">🕸️</div>
+      <div class="alpha-card-title">客戶供應商風險矩陣</div>
+      <div class="alpha-card-desc">建立「客戶依賴度 × 供應商集中度」風險矩陣，識別單一客戶依賴或供應商斷鏈風險，提前做分散布局。</div>
+      <div class="alpha-card-metric">🛡️ 提前識別斷鏈風險</div>
+    </div>
+    <div class="alpha-card ac5" onclick="toggleAlpha(this)">
+      <div class="alpha-card-icon">⚡</div>
+      <div class="alpha-card-title">競品分析速度</div>
+      <div class="alpha-card-desc">標準化 Prompt 模板讓競品分析報告從半天縮短至 30 分鐘，更快速地對市場變化做出反應，搶佔定價先機。</div>
+      <div class="alpha-card-metric">🚀 報告速度提升 5–8 倍</div>
+    </div>
+    <div class="alpha-card ac6" onclick="toggleAlpha(this)">
+      <div class="alpha-card-icon">📐</div>
+      <div class="alpha-card-title">訊號導向決策品質</div>
+      <div class="alpha-card-desc">從「看數字」升級為「看變化」——追蹤訊號的方向、速度與共振，讓每一次備料和報價決策都有結構性依據。</div>
+      <div class="alpha-card-metric">📊 決策有據可查，減少直覺誤判</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section id="principles">
+  <div class="section-label">06 導入四大原則</div>
+  <div class="section-title">避免踩雷的核心守則</div>
+  <p class="section-desc">AI 工具導入失敗的原因，往往不是工具不好，而是基礎沒做好。這四個原則是確保成功的關鍵。</p>
+
+  <div class="principles-grid">
+    <div class="principle-card">
+      <div class="principle-num-bg">01</div>
+      <div class="principle-top">
+        <div class="principle-icon-circle" style="background:rgba(224,123,42,0.15);">🗂️</div>
+        <div class="principle-title">資料品質優先</div>
+      </div>
+      <div class="principle-desc">不管用哪種 AI 工具，資料的格式（建議 Markdown）、完整性與時間戳記是一切的基礎。垃圾進，垃圾出——AI 無法彌補爛資料。塑化產業要特別確保：報價資料有來源、庫存數據有日期、法說會稿件已清理格式。</div>
+      <div class="principle-action" style="background:rgba(224,123,42,0.15);color:#E07B2A;">▶ 先整頓內部資料，再談工具導入</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num-bg">02</div>
+      <div class="principle-top">
+        <div class="principle-icon-circle" style="background:rgba(74,159,212,0.15);">👁️</div>
+        <div class="principle-title">Human Loop 不可省略</div>
+      </div>
+      <div class="principle-desc">AI 產出的任何報告、分析或建議，都必須由人工進行最終審核。法說會的講者辨識、報價數字的正確性、競品分析的邏輯，都需要有產業經驗的人來把關。AI 是助理，不是決策者，責任永遠在人。</div>
+      <div class="principle-action" style="background:rgba(74,159,212,0.15);color:var(--sky);">▶ AI 整理，人判斷，責任在人</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num-bg">03</div>
+      <div class="principle-top">
+        <div class="principle-icon-circle" style="background:rgba(26,155,108,0.15);">🪜</div>
+        <div class="principle-title">不求一步到位</div>
+      </div>
+      <div class="principle-desc">先搞清楚自己的需求，把工作拆解成小步驟，確認每個環節需要什麼資料，再逐步導入工具。從建立 Prompt 模板庫開始（零成本），再評估是否需要付費資料庫，避免花冤枉錢在無法落地的工具上。</div>
+      <div class="principle-action" style="background:rgba(26,155,108,0.15);color:var(--green);">▶ Prompt 模板庫是最低成本的起點</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num-bg">04</div>
+      <div class="principle-top">
+        <div class="principle-icon-circle" style="background:rgba(123,63,160,0.15);">🔐</div>
+        <div class="principle-title">資安與資料分級管控</div>
+      </div>
+      <div class="principle-desc">建立明確的「AI 使用邊界」：客戶合約、定價策略、未公開業績等敏感資訊不得輸入公共 AI 工具。可使用去識別化處理或企業版工具（有資料隔離保障）。避免因貪圖方便而造成商業機密外洩。</div>
+      <div class="principle-action" style="background:rgba(123,63,160,0.15);color:#A070C8;">▶ 優先評估企業版或私有部署方案</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<div class="quote-section">
+  <div class="quote-text">
+    「不是資料讓你有優勢，<br>而是<em>你如何處理資料</em>。」
+  </div>
+  <div class="quote-source">— S&P Global 講座核心金句 ／ 集團幕僚產銷管理部門 2026.03</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">© 2026 集團幕僚產銷管理部門 ／ 內部資料，請勿外傳</div>
+  <div class="footer-right">
+    <a href="#supply">供應鏈</a>
+    <a href="#signals">訊號監測</a>
+    <a href="#prompts">Prompt</a>
+    <a href="#workflow">工作流程</a>
+    <a href="#alpha">競爭優勢</a>
+    <a href="#principles">導入原則</a>
+  </div>
+</footer>
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ── Scroll Animations ──
+const sections = document.querySelectorAll('section');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+sections.forEach(s => observer.observe(s));
+
+// ── Nav Active State ──
+window.addEventListener('scroll', () => {
+  // scroll top btn
+  document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 400);
+  // nav active
+  const ids = ['supply','signals','prompts','workflow','alpha','principles'];
+  let active = '';
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top < 100) active = id;
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + active);
+  });
+});
+
+// ── Supply Chain Detail ──
+let activeChainNode = null;
+function showChainDetail(id, node) {
+  const all = document.querySelectorAll('.chain-detail');
+  const allNodes = document.querySelectorAll('.chain-node');
+  const target = document.getElementById('chain-detail-' + id);
+  if (activeChainNode === node && target.classList.contains('show')) {
+    target.classList.remove('show');
+    node.classList.remove('active');
+    activeChainNode = null;
+    return;
+  }
+  all.forEach(d => d.classList.remove('show'));
+  allNodes.forEach(n => n.classList.remove('active'));
+  target.classList.add('show');
+  node.classList.add('active');
+  activeChainNode = node;
+}
+
+// ── Signal Tabs ──
+function showSignal(id, btn) {
+  document.querySelectorAll('.signal-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.signal-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('sp-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Prompt Selector ──
+function showPrompt(id, btn) {
+  document.querySelectorAll('.prompt-display').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.prompt-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pp-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Copy Prompt ──
+function copyPrompt(id, btn) {
+  const text = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ 已複製';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '複製'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── Workflow Detail ──
+let activeWf = null;
+function showWfDetail(id, node) {
+  const allPanels = document.querySelectorAll('.wf-detail-panel');
+  const target = document.getElementById('wfd-' + id);
+  const allCircles = document.querySelectorAll('.wf-circle');
+  if (activeWf === id && target.classList.contains('show')) {
+    target.classList.remove('show');
+    activeWf = null;
+    return;
+  }
+  allPanels.forEach(p => p.classList.remove('show'));
+  target.classList.add('show');
+  activeWf = id;
+  target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── Alpha toggle ──
+function toggleAlpha(card) {
+  card.style.background = card.style.background ? '' : 'var(--off)';
+}
+
+// ── Smooth scroll for hero pills ──
+function scrollTo(hash) {
+  const el = document.querySelector(hash);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
